@@ -23,13 +23,14 @@ const styles = (theme: Theme) => createStyles({
     '&::before,&::after': {
       display: 'block',
       content: '""',
-      height: `calc(50% - ${theme.typography.h1.fontSize || '6rem'} / 2)`,
+      height: `calc(50% - ${theme.typography.h1.fontSize || '6rem'})`,
     },
   },
   historyContainer: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    minHeight: `calc(${theme.typography.h1.fontSize} * 2)`,
     '&::before, &::after': {
       display: 'block',
       content: '""',
@@ -60,7 +61,8 @@ const styles = (theme: Theme) => createStyles({
 })
 
 export interface Props extends WithStyles<typeof styles> {
-  history: History
+  history: History,
+  names: string[],
 }
 
 class HistoryDisplay extends Component<Props> {
@@ -78,7 +80,7 @@ class HistoryDisplay extends Component<Props> {
                   variant={i < history.length - 1 ? 'h2' : 'h1'}
                   color={i < history.length - 1 ? 'default' : 'primary'}
                 >
-                  {numbers.map(x => (x + 1).toString()).join(', ')}
+                  {numbers.map(x => this.playerToString(x)).join(', ')}
                 </Typography>
               </div>
             ))}
@@ -86,6 +88,10 @@ class HistoryDisplay extends Component<Props> {
         </div>
       </div>
     )
+  }
+
+  private playerToString = (id: number) => {
+    return this.props.names[id] || (id + 1).toString()
   }
 
   componentDidUpdate () {

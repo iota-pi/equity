@@ -37,7 +37,7 @@ class TextInput extends Component<Props> {
           inputProps: {
             min: this.props.min || 1,
             max: this.props.max,
-            step: this.props.step || 1
+            step: this.props.step || 1,
           },
           startAdornment: (
             <InputAdornment position="start">
@@ -50,7 +50,7 @@ class TextInput extends Component<Props> {
   }
 
   private handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseInt(event.target.value || "1")
+    const newValue = parseInt(event.target.value);
     this.setState({ value: newValue });
     if (this.props.onChange) {
       this.props.onChange(newValue);

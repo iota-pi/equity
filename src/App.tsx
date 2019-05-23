@@ -13,61 +13,65 @@ import Typography from '@material-ui/core/Typography';
 import NumberInput from './components/NumberInput';
 import HistoryDisplay from './components/HistoryDisplay';
 import TextField from "@material-ui/core/TextField";
+import Divider from "@material-ui/core/Divider";
 import { History } from './History';
 
 // Todo change History to be class containing entries and with relevant methods
 
-const styles = (theme: Theme) => createStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-  },
-  iconButton: {
-    marginLeft: 6,
-    marginRight: 6,
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  pageContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
-  },
-  section: {
-    padding: 18,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  paddedGrid: {
-    marginTop: -8,
-    marginBottom: -8,
-    marginLeft: -12,
-    marginRight: -12,
-    '&>*': {
-      paddingTop: 8,
-      paddingBottom: 8,
-      paddingLeft: 12,
-      paddingRight: 12,
+const styles = (theme: Theme) => {
+  const unit = theme.spacing.unit;
+  return createStyles({
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100vh',
     },
-  },
-  topDrawer: {
-    maxHeight: '75vh',
-  },
-  slightPadding: {
-    padding: 8,
-  },
-  main: {
-    flexGrow: 1,
-    position: 'relative',
-    overflow: 'hidden', /* TODO: may be able to remove */
-  },
-  footer: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: 18,
-    padding: 12,
-  },
-});
+    appBarSpacer: theme.mixins.toolbar,
+    pageContent: {
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 1,
+    },
+    section: {
+      padding: unit * 2,
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    paddedGrid: {
+      marginTop: -unit,
+      marginBottom: -unit,
+      marginLeft: -unit * 1.5,
+      marginRight: -unit * 1.5,
+      '&>*': {
+        paddingTop: unit,
+        paddingBottom: unit,
+        paddingLeft: unit * 1.5,
+        paddingRight: unit * 1.5,
+      },
+    },
+    topDrawer: {
+      maxHeight: '75vh',
+      overflowY: 'auto',
+    },
+    slightPadding: {
+      padding: unit,
+    },
+    slightMargin: {
+      margin: unit,
+    },
+    main: {
+      flexGrow: 1,
+      position: 'relative',
+      overflow: 'hidden', /* TODO: may be able to remove */
+    },
+    footer: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: unit * 2,
+      padding: unit * 1.5,
+    },
+  });
+};
 
 export interface Props extends WithStyles<typeof styles> {};
 export interface State {
@@ -212,18 +216,65 @@ class App extends Component<Props, State> {
       for (let i = 0; i < this.state.players; ++i) {
         countArray.push(counts.get(i) as number);
       }
+      const mostCalls = Math.max(...Array.from(counts.values()));
 
       drawerContent = (
         <div className={classes.slightPadding}>
-          <Grid container spacing={8}>
-            {countArray.map((count, i) => (
-              <Grid item xs={3} key={`playerCounts-${i}`}>
-                <Typography variant="h4">
+          <div>
+            <Grid
+              container
+              spacing={8}
+              alignItems="center"
+            >
+              <Grid item xs={5}>
+                <Typography variant="h6" align="right">
+                  Player
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Typography variant="h6" align="center">
+                  Call Count
+                </Typography>
+              </Grid>
+            </Grid>
+
+            <Divider className={classes.slightMargin}/>
+          </div>
+
+
+          {countArray.map((count, i) => (
+            <Grid
+              container
+              spacing={8}
+              justify="center"
+              alignItems="center"
+              key={`playerCounts-${i}`}
+            >
+              <Grid item xs={5}>
+                <Typography variant="h5" align="right">
                   {this.playerToString(i)}
                 </Typography>
               </Grid>
-            ))}
-          </Grid>
+              <Grid item xs={2}>
+                <Typography
+                  variant="body2"
+                  align="center"
+                  color={count < mostCalls ? "error" : "default"}
+                >
+                  {count}
+                </Typography>
+              </Grid>
+              <Grid item xs={5}>
+                <Button
+                  variant="text"
+                  color="primary"
+                  onClick={() => this.handleCallClick(i)}
+                >
+                  Call
+                </Button>
+              </Grid>
+            </Grid>
+          ))}
         </div>
       )
     }
@@ -233,6 +284,8 @@ class App extends Component<Props, State> {
         <div className={classes.topDrawer}>
           {drawerContent}
         </div>
+
+        <Divider/>
 
         <Grid container justify="center" className={classes.slightPadding}>
           <Grid item xs={12} sm={6}>
@@ -273,6 +326,10 @@ class App extends Component<Props, State> {
     this.addNumber();
   };
 
+  private handleCallClick = (player: number) => {
+    this.addNumber(player);
+  };
+
   private handleSetNames = () => {
     this.setState({ drawer: true, showNames: true });
   };
@@ -285,9 +342,9 @@ class App extends Component<Props, State> {
     this.setState({ drawer: false, showNames: false, showCounts: false });
   };
 
-  private addNumber = () => {
+  private addNumber = (player?: number) => {
     const history: History = Object.create(this.state.history);
-    history.add();
+    history.add(player);
     this.setState({ history });
   }
 

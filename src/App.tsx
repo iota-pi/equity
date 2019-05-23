@@ -222,18 +222,20 @@ class App extends Component<Props, State> {
             <Grid
               container
               spacing={8}
+              justify="center"
               alignItems="center"
             >
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <Typography variant="h6" align="right">
                   Player
                 </Typography>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <Typography variant="h6" align="center">
                   Call Count
                 </Typography>
               </Grid>
+              <Grid item xs={4}></Grid>
             </Grid>
 
             <Divider className={classes.slightMargin}/>
@@ -248,12 +250,12 @@ class App extends Component<Props, State> {
               alignItems="center"
               key={`playerCounts-${i}`}
             >
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <Typography variant="h5" align="right">
                   {this.playerToString(i)}
                 </Typography>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <Typography
                   variant="body2"
                   align="center"
@@ -262,7 +264,7 @@ class App extends Component<Props, State> {
                   {count}
                 </Typography>
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <Button
                   variant="text"
                   color="primary"

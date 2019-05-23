@@ -50,10 +50,17 @@ const styles = (theme: Theme) => createStyles({
     width: '100%',
   },
   larger: {
-    fontSize: theme.typography.h2.fontSize,
-    '&:last-child>h1': {
-      fontSize: `calc(${theme.typography.h1.fontSize} * 1.15)`,
-    }
+    [theme.breakpoints.only('xs')]: {
+      fontSize: `calc(${theme.typography.h2.fontSize} * 0.85)`,
+      '&:last-child': {
+        fontSize: `calc(${theme.typography.h1.fontSize})`,
+      },
+    },
+    [theme.breakpoints.up('sm')]: {
+      '&:last-child': {
+        fontSize: `calc(${theme.typography.h1.fontSize} * 1.15)`,
+      },
+    },
   },
 });
 
@@ -78,14 +85,14 @@ class HistoryDisplay extends Component<Props> {
         >
           <div className={classes.historyContainer}>
             {history.map((numbers, i) => (
-              <div className={[classes.historyRow, classes.larger].join(' ')} key={`historyRow-${i}`}>
-                <Typography
-                  variant={i < history.length - 1 ? 'h2' : 'h1'}
-                  color={i < history.length - 1 ? 'default' : 'primary'}
-                >
-                  {numbers.map(x => this.playerToString(x)).join(', ')}
-                </Typography>
-              </div>
+              <Typography
+                variant={i < history.length - 1 ? 'h2' : 'h1'}
+                color={i < history.length - 1 ? 'default' : 'primary'}
+                align="center"
+                className={[classes.historyRow, classes.larger].join(' ')} key={`historyRow-${i}`}
+              >
+                {numbers.map(x => this.playerToString(x)).join(', ')}
+              </Typography>
             ))}
           </div>
         </div>

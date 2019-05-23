@@ -85,9 +85,10 @@ export class History {
     this.lastEdit = 0;
   }
 
-  sorted () {
+  formatted () {
     const numberSort = (a: number, b: number) => +(a > b) - +(a < b);
-    return this.data.map((group) => group.slice().sort(numberSort));
+    const formatted = this.data.map((group) => group.slice().sort(numberSort));
+    return formatted.filter(group => group.length > 0);
   }
 
   private randomPlayer () {

@@ -63,7 +63,7 @@ it('can format correctly', () => {
   h.newGroup();
   h.add(1);
   h.add(0);
-  expect(h.sorted()).toEqual([[2, 3], [0, 1]]);
+  expect(h.formatted()).toEqual([[2, 3], [0, 1]]);
   expect(h.numberOfGroups).toBe(2);
   expect(h.numberOfCalls).toBe(4);
 
@@ -119,7 +119,7 @@ it('will distribute evenly into multiple groups', () => {
   }
   expect(h.allCalls.slice().sort()).toEqual(allCalls);
 
-  const sorted = h.sorted();
+  const sorted = h.formatted();
   for (let group of sorted) {
     expect(group).toEqual(eachGroup);
   }
@@ -141,7 +141,7 @@ it('can perform simple undo', () => {
   h.add(3);
   h.undo();
   expect(h.allCalls).toEqual([2, 1]);
-  expect(h.sorted()).toEqual([[1, 2]]);
+  expect(h.formatted()).toEqual([[1, 2]]);
 })
 
 it('can undo across groups', () => {
@@ -152,8 +152,10 @@ it('can undo across groups', () => {
   expect(h.numberOfGroups).toBe(3);
   h.undo();
   expect(h.numberOfGroups).toBe(3);
+  expect(h.formatted().length).toBe(2);
   h.undo();
   expect(h.numberOfGroups).toBe(2);
+  expect(h.formatted().length).toBe(1);
 })
 
 it('resets the time after an undo', (done) => {
@@ -184,13 +186,13 @@ it('can be cleared', () => {
   expect(h.numberOfGroups).toBe(1);
   expect(h.numberOfCalls).toBe(0);
   expect(h.allCalls).toEqual([]);
-  expect(h.sorted()).toEqual([[]]);
+  expect(h.formatted()).toEqual([]);
 
   const x = h.add();
   expect(h.numberOfGroups).toBe(1);
   expect(h.numberOfCalls).toBe(1);
   expect(h.allCalls).toEqual([x]);
-  expect(h.sorted()).toEqual([[x]]);
+  expect(h.formatted()).toEqual([[x]]);
 })
 
 it('doesn\'t repeat calls immediately', () => {

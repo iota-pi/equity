@@ -66,7 +66,7 @@ class HistoryDisplay extends Component<Props> {
   private scrollBarWidth: number = 0
 
   render() {
-    const history = this.props.history.sorted();
+    const history = this.props.history.formatted();
     const classes = this.props.classes;
 
     return (

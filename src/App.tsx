@@ -6,6 +6,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Drawer from '@material-ui/core/Drawer';
@@ -14,6 +15,7 @@ import NumberInput from './components/NumberInput';
 import HistoryDisplay from './components/HistoryDisplay';
 import TextField from "@material-ui/core/TextField";
 import Divider from "@material-ui/core/Divider";
+import Undo from '@material-ui/icons/Undo';
 import { History } from './History';
 
 // Todo change History to be class containing entries and with relevant methods
@@ -25,6 +27,9 @@ const styles = (theme: Theme) => {
       display: 'flex',
       flexDirection: 'column',
       minHeight: '100vh',
+    },
+    grow: {
+      flexGrow: 1,
     },
     appBarSpacer: theme.mixins.toolbar,
     pageContent: {
@@ -96,12 +101,14 @@ class App extends Component<Props, State> {
         <AppBar
           position="absolute"
         >
-          <Toolbar
-            // disableGutters
-          >
-            <Typography variant="h6" color="inherit">
+          <Toolbar>
+            <Typography variant="h6" color="inherit" className={classes.grow}>
               Equity
             </Typography>
+
+            <IconButton color="inherit" onClick={this.handleUndoClick}>
+              <Undo/>
+            </IconButton>
           </Toolbar>
         </AppBar>
 
@@ -308,6 +315,12 @@ class App extends Component<Props, State> {
       this.nextButton.current.focus();
     }
     this.addNumber();
+  };
+
+  private handleUndoClick = () => {
+    const history: History = Object.create(this.state.history);
+    history.undo();
+    this.setState({ history });
   };
 
   private handleNextClick = () => {

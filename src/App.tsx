@@ -16,6 +16,7 @@ import HistoryDisplay from './components/HistoryDisplay';
 import TextField from "@material-ui/core/TextField";
 import Divider from "@material-ui/core/Divider";
 import Undo from '@material-ui/icons/Undo';
+import ClearAll from '@material-ui/icons/ClearAll';
 import { History } from './History';
 
 const styles = (theme: Theme) => {
@@ -104,7 +105,11 @@ class App extends Component<Props, State> {
               Equity
             </Typography>
 
-            <IconButton color="inherit" onClick={this.handleUndoClick}>
+            <IconButton color="inherit" onClick={this.handleClearClick} disabled={!this.canUndo}>
+              <ClearAll/>
+            </IconButton>
+
+            <IconButton color="inherit" onClick={this.handleUndoClick} disabled={!this.canUndo}>
               <Undo/>
             </IconButton>
           </Toolbar>
@@ -314,6 +319,16 @@ class App extends Component<Props, State> {
     }
     this.addNumber();
   };
+
+  private get canUndo () {
+    return this.state.history.numberOfCalls > 0
+  }
+
+  private handleClearClick = () => {
+    const history: History = Object.create(this.state.history);
+    history.clear();
+    this.setState({ history });
+  }
 
   private handleUndoClick = () => {
     const history: History = Object.create(this.state.history);

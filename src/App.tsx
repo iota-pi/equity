@@ -18,8 +18,6 @@ import Divider from "@material-ui/core/Divider";
 import Undo from '@material-ui/icons/Undo';
 import { History } from './History';
 
-// Todo change History to be class containing entries and with relevant methods
-
 const styles = (theme: Theme) => {
   const unit = theme.spacing.unit;
   return createStyles({
@@ -55,7 +53,7 @@ const styles = (theme: Theme) => {
     main: {
       flexGrow: 1,
       position: 'relative',
-      overflow: 'hidden', /* TODO: may be able to remove */
+      overflow: 'hidden',
     },
     footer: {
       display: 'flex',

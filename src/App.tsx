@@ -37,18 +37,6 @@ const styles = (theme: Theme) => {
       display: 'flex',
       flexDirection: 'column',
     },
-    paddedGrid: {
-      marginTop: -unit,
-      marginBottom: -unit,
-      marginLeft: -unit * 1.5,
-      marginRight: -unit * 1.5,
-      '&>*': {
-        paddingTop: unit,
-        paddingBottom: unit,
-        paddingLeft: unit * 1.5,
-        paddingRight: unit * 1.5,
-      },
-    },
     topDrawer: {
       maxHeight: '75vh',
       overflowY: 'auto',
@@ -121,7 +109,7 @@ class App extends Component<Props, State> {
           <div className={classes.appBarSpacer} />
 
           <section className={classes.section}>
-            <Grid container className={classes.paddedGrid}>
+            <Grid container spacing={16}>
               <Grid item xs={12}>
                 <NumberInput
                   label="Number of Players"

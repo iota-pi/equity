@@ -15,7 +15,7 @@ const styles = (theme: Theme) => createStyles({
     bottom: 0,
   },
   scrollable: {
-    overflowY: 'auto',
+    overflowY: 'scroll',
     zIndex: 10,
     paddingLeft: 100 + theme.spacing.unit * 2,
     paddingRight: 100 + theme.spacing.unit * 2,
@@ -27,9 +27,6 @@ const styles = (theme: Theme) => createStyles({
     },
   },
   historyContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
     minHeight: `calc(${theme.typography.h1.fontSize} * 2)`,
     '&::before, &::after': {
       display: 'block',
@@ -58,7 +55,7 @@ const styles = (theme: Theme) => createStyles({
       fontSize: `calc(${theme.typography.h1.fontSize} * 1.15)`,
     }
   },
-})
+});
 
 export interface Props extends WithStyles<typeof styles> {
   history: History,
@@ -66,13 +63,19 @@ export interface Props extends WithStyles<typeof styles> {
 }
 
 class HistoryDisplay extends Component<Props> {
+  private scrollBarWidth: number = 0
+
   render() {
     const history = this.props.history.sorted();
     const classes = this.props.classes;
 
     return (
       <div className={classes.root}>
-        <div className={classes.scrollable} ref="scrollable">
+        <div
+          className={classes.scrollable}
+          ref="scrollable"
+          style={{marginRight: -this.scrollBarWidth}}
+        >
           <div className={classes.historyContainer}>
             {history.map((numbers, i) => (
               <div className={[classes.historyRow, classes.larger].join(' ')} key={`historyRow-${i}`}>
@@ -92,6 +95,13 @@ class HistoryDisplay extends Component<Props> {
 
   private playerToString = (id: number) => {
     return this.props.names[id] || (id + 1).toString()
+  }
+
+  componentDidMount () {
+    // Get scrollbar width
+    const el = ReactDOM.findDOMNode(this.refs.scrollable) as HTMLElement;
+    console.log('componentDidRender()', el.offsetWidth, el.clientWidth);
+    this.scrollBarWidth = el.offsetWidth - el.clientWidth;
   }
 
   componentDidUpdate () {

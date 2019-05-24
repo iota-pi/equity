@@ -2,19 +2,15 @@ import React, { Component, ChangeEvent } from 'react';
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
 import createStyles from "@material-ui/core/styles/createStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
-
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Drawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
 import NumberInput from './components/NumberInput';
 import HistoryDisplay from './components/HistoryDisplay';
-import TextField from "@material-ui/core/TextField";
-import Divider from "@material-ui/core/Divider";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -22,7 +18,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Undo from '@material-ui/icons/Undo';
 import ClearAll from '@material-ui/icons/ClearAll';
+import TopDrawer from './components/TopDrawer';
 import { PlayerHistory } from './History';
+import State from './State';
 
 const styles = (theme: Theme) => {
   const unit = theme.spacing.unit;
@@ -46,16 +44,6 @@ const styles = (theme: Theme) => {
       display: 'flex',
       flexDirection: 'column',
     },
-    topDrawer: {
-      maxHeight: '75vh',
-      overflowY: 'auto',
-    },
-    slightPadding: {
-      padding: unit,
-    },
-    slightMargin: {
-      margin: unit,
-    },
     main: {
       flexGrow: 1,
       position: 'relative',
@@ -71,16 +59,6 @@ const styles = (theme: Theme) => {
 };
 
 export interface Props extends WithStyles<typeof styles> {};
-export interface State {
-  players: number,
-  history: History,
-  names: string[],
-  dontConfirmClear: number,
-  dialog: boolean,
-  drawer: boolean,
-  showNames: boolean,
-  showCounts: boolean,
-};
 
 const defaults = {
   players: 1,
@@ -177,13 +155,15 @@ class App extends Component<Props, State> {
             />
           </section>
 
-          <Drawer
-            anchor="top"
+          <TopDrawer
             open={this.state.drawer}
             onClose={this.handleDrawerClose}
-          >
-            {this.renderDrawer()}
-          </Drawer>
+            onNameChange={this.handleNameChange}
+            onCallClick={this.handleCallClick}
+            onClear={this.handleClearClick}
+            onClearNames={this.handleClearNames}
+            {...this.state}
+          />
 
           <Dialog
             open={this.state.dialog}
@@ -238,123 +218,6 @@ class App extends Component<Props, State> {
     this.setState({ ...this.loadFromStorage() });
   }
 
-  private renderDrawer = () => {
-    const classes = this.props.classes;
-
-    let drawerContent: JSX.Element = <div></div>;
-    if (this.state.showNames) {
-      drawerContent = (
-        <div>
-          {this.state.names.slice(0, this.state.players).map((name, i) => (
-            <div className={classes.slightPadding} key={`playerNames-${i}`}>
-              <TextField
-                label={(i + 1).toString()}
-                variant="outlined"
-                fullWidth
-                defaultValue={name}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => this.handleNameChange(event, i)}
-              />
-            </div>
-          ))}
-        </div>
-      )
-    } else if (this.state.showCounts) {
-      // Get count for each player
-      const counts = this.state.history.callCounts;
-      const countArray: number[] = [];
-      for (let i = 0; i < this.state.players; ++i) {
-        countArray.push(counts.get(i) as number);
-      }
-      const mostCalls = Math.max(...Array.from(counts.values()));
-
-      drawerContent = (
-        <div className={classes.slightPadding}>
-          <div>
-            <Grid
-              container
-              spacing={8}
-              justify="center"
-              alignItems="center"
-            >
-              <Grid item xs={4}>
-                <Typography variant="h6" align="right">
-                  Player
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="h6" align="center">
-                  Call Count
-                </Typography>
-              </Grid>
-              <Grid item xs={4}></Grid>
-            </Grid>
-
-            <Divider className={classes.slightMargin}/>
-          </div>
-
-
-          {countArray.map((count, i) => (
-            <Grid
-              container
-              spacing={8}
-              justify="center"
-              alignItems="center"
-              key={`playerCounts-${i}`}
-            >
-              <Grid item xs={4}>
-                <Typography variant="h5" align="right">
-                  {this.playerToString(i)}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography
-                  variant="body2"
-                  align="center"
-                  color={count < mostCalls ? "error" : "default"}
-                >
-                  {count}
-                </Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Button
-                  variant="text"
-                  color="primary"
-                  onClick={() => this.handleCallClick(i)}
-                >
-                  Call
-                </Button>
-              </Grid>
-            </Grid>
-          ))}
-        </div>
-      )
-    }
-
-    return (
-      <div>
-        <div className={classes.topDrawer}>
-          {drawerContent}
-        </div>
-
-        <Divider/>
-
-        <Grid container justify="center" className={classes.slightPadding}>
-          <Grid item xs={12} sm={6}>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              fullWidth
-              onClick={this.handleDrawerClose}
-            >
-              Done
-            </Button>
-          </Grid>
-        </Grid>
-      </div>
-    )
-  }
-
   componentDidUpdate (_: Props, prevState: State) {
     if (prevState.history !== this.state.history ||
         prevState.names !== this.state.names ||
@@ -375,16 +238,17 @@ class App extends Component<Props, State> {
     this.setState({ names });
   };
 
+  private handleClearNames = () => {
+    const names = this.state.names.map(() => '');
+    this.setState({ names });
+  };
+
   private handleEnterPress = () => {
     if (this.nextButton.current) {
       this.nextButton.current.focus();
     }
     this.addNumber();
   };
-
-  private get canUndo () {
-    return this.state.history.numberOfCalls > 0
-  }
 
   private handleClearClick = () => {
     const history: PlayerHistory = Object.create(this.state.history);
@@ -455,8 +319,8 @@ class App extends Component<Props, State> {
     this.setState({ names });
   };
 
-  private playerToString = (id: number) => {
-    return this.state.names[id] || (id + 1).toString()
+  private get canUndo () {
+    return this.state.history.numberOfCalls > 0
   }
 
   // Save and restore state to/from localStorage

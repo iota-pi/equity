@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from 'react'
+import React, { Component, ChangeEvent, KeyboardEvent } from 'react'
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
 import createStyles from "@material-ui/core/styles/createStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
@@ -15,17 +15,15 @@ import AppState from '../State';
 type InputChange = ChangeEvent<HTMLInputElement>;
 
 const styles = (theme: Theme) => {
-  const unit = theme.spacing.unit;
-
   return createStyles({
     slightPadding: {
-      padding: unit,
+      padding: theme.spacing(1),
     },
     slightMargin: {
-      margin: unit,
+      margin: theme.spacing(1),
     },
     topDrawer: {
-      padding: unit,
+      padding: theme.spacing(1),
       maxHeight: '75vh',
       overflowY: 'auto',
     },
@@ -69,11 +67,13 @@ class TopDrawer extends Component<Props> {
                 fullWidth
                 value={name}
                 onChange={(event: InputChange) => this.props.onNameChange(event.target.value, i)}
+                onKeyPress={this.handleKeyPress}
                 InputProps={{
                   endAdornment: (
                     <IconButton
                       aria-label="Clear field"
                       onClick={() => this.props.onNameChange('', i)}
+                      tabIndex={-1}
                     >
                       <Clear/>
                     </IconButton>
@@ -92,9 +92,7 @@ class TopDrawer extends Component<Props> {
               variant="outlined"
               size="large"
               fullWidth
-              onClick={() => {
-                this.props.onClearNames();
-              }}
+              onClick={this.props.onClearNames}
             >
               Clear Names
             </Button>
@@ -118,7 +116,7 @@ class TopDrawer extends Component<Props> {
         <React.Fragment>
           <Grid
             container
-            spacing={8}
+            spacing={1}
             justify="center"
             alignItems="center"
           >
@@ -140,7 +138,7 @@ class TopDrawer extends Component<Props> {
           {countArray.map((count, i) => (
             <Grid
               container
-              spacing={8}
+              spacing={1}
               justify="center"
               alignItems="center"
               key={`playerCounts-${i}`}
@@ -154,7 +152,7 @@ class TopDrawer extends Component<Props> {
                 <Typography
                   variant="body2"
                   align="center"
-                  color={count < mostCalls ? "error" : "default"}
+                  color={count < mostCalls ? "error" : "initial"}
                 >
                   {count}
                 </Typography>
@@ -206,12 +204,19 @@ class TopDrawer extends Component<Props> {
         <Divider/>
 
         <div className={classes.slightPadding}>
-          <Grid container justify="center" spacing={16}>
+          <Grid container justify="center" spacing={2}>
             {footerContent}
           </Grid>
         </div>
       </Drawer>
     )
+  }
+
+  private handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    // Close drawer on Ctrl-Enter
+    if (event.ctrlKey && (event.nativeEvent.code === 'Enter' || event.nativeEvent.which === 13)) {
+      this.props.onClose();
+    }
   }
 
   private playerToString = (id: number) => {

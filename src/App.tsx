@@ -1,7 +1,8 @@
 import React, { Component, ChangeEvent } from 'react';
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
 import createStyles from "@material-ui/core/styles/createStyles";
-import { Theme } from "@material-ui/core/styles/createMuiTheme";
+import createMuiTheme, { Theme } from "@material-ui/core/styles/createMuiTheme";
+import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,9 +22,19 @@ import ClearAll from '@material-ui/icons/ClearAll';
 import TopDrawer from './components/TopDrawer';
 import { PlayerHistory } from './History';
 import State from './State';
+import amber from '@material-ui/core/colors/amber';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: amber,
+    // primary: {
+    //   main: '#ffb300',
+    // },
+  },
+  typography: {},
+});
 
 const styles = (theme: Theme) => {
-  const unit = theme.spacing.unit;
   return createStyles({
     root: {
       display: 'flex',
@@ -40,7 +51,7 @@ const styles = (theme: Theme) => {
       flexGrow: 1,
     },
     section: {
-      padding: unit * 2,
+      padding: theme.spacing(2),
       display: 'flex',
       flexDirection: 'column',
     },
@@ -52,8 +63,8 @@ const styles = (theme: Theme) => {
     footer: {
       display: 'flex',
       justifyContent: 'center',
-      marginTop: unit * 2,
-      padding: unit * 1.5,
+      marginTop: theme.spacing(2),
+      padding: theme.spacing(1.5),
     },
   });
 };
@@ -88,129 +99,131 @@ class App extends Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="absolute"
-        >
-          <Toolbar>
-            <Typography variant="h6" color="inherit" className={classes.grow}>
-              Equity
-            </Typography>
-
-            <IconButton color="inherit" onClick={this.handleDialogOpen} disabled={!this.canUndo}>
-              <ClearAll/>
-            </IconButton>
-
-            <IconButton color="inherit" onClick={this.handleUndoClick} disabled={!this.canUndo}>
-              <Undo/>
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-
-        <div className={classes.pageContent}>
-          <div className={classes.appBarSpacer} />
-
-          <section className={classes.section}>
-            <Grid container spacing={16}>
-              <Grid item xs={12}>
-                <NumberInput
-                  label="Number of Players"
-                  variant="outlined"
-                  value={this.state.players}
-                  fullWidth
-                  autoFocus
-                  onChange={this.handlePlayerChange}
-                  onEnterPress={this.handleEnterPress}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  size="large"
-                  variant="outlined"
-                  color="primary"
-                  fullWidth
-                  onClick={this.handleSetNames}
-                >
-                  Set Names
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  size="large"
-                  variant="outlined"
-                  fullWidth
-                  onClick={this.handleShowCounts}
-                >
-                  View Counts
-                </Button>
-              </Grid>
-            </Grid>
-          </section>
-
-          <section className={[classes.section, classes.main].join(' ')}>
-            <HistoryDisplay
-              history={this.state.history}
-              names={this.state.names}
-            />
-          </section>
-
-          <TopDrawer
-            open={this.state.drawer}
-            onClose={this.handleDrawerClose}
-            onNameChange={this.handleNameChange}
-            onCallClick={this.handleCallClick}
-            onClear={this.handleClearClick}
-            onClearNames={this.handleClearNames}
-            {...this.state}
-          />
-
-          <Dialog
-            open={this.state.dialog}
-            onClose={this.handleDialogClose}
-            aria-labelledby="alert-dialog-title"
+      <ThemeProvider theme={theme}>
+        <div className={classes.root}>
+          <CssBaseline />
+          <AppBar
+            position="absolute"
           >
-            <DialogContent>
-              <Typography>
-                Clear player call history? This action cannot be undone.
+            <Toolbar>
+              <Typography variant="h6" color="inherit" className={classes.grow}>
+                Equity
               </Typography>
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.dontConfirmClear >= Date.now()}
-                    onChange={this.handleChangeCheck}
-                    color="primary"
+              <IconButton color="inherit" onClick={this.handleDialogOpen} disabled={!this.canUndo}>
+                <ClearAll/>
+              </IconButton>
+
+              <IconButton color="inherit" onClick={this.handleUndoClick} disabled={!this.canUndo}>
+                <Undo/>
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+
+          <div className={classes.pageContent}>
+            <div className={classes.appBarSpacer} />
+
+            <section className={classes.section}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <NumberInput
+                    label="Number of Players"
+                    variant="outlined"
+                    value={this.state.players}
+                    fullWidth
+                    autoFocus
+                    onChange={this.handlePlayerChange}
+                    onEnterPress={this.handleEnterPress}
                   />
-                }
-                label="Don't ask again today"
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    size="large"
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    onClick={this.handleSetNames}
+                  >
+                    Set Names
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    size="large"
+                    variant="outlined"
+                    fullWidth
+                    onClick={this.handleShowCounts}
+                  >
+                    View Counts
+                  </Button>
+                </Grid>
+              </Grid>
+            </section>
+
+            <section className={[classes.section, classes.main].join(' ')}>
+              <HistoryDisplay
+                history={this.state.history}
+                names={this.state.names}
               />
-            </DialogContent>
+            </section>
 
-            <DialogActions>
-              <Button variant="text" onClick={this.handleDialogClose}>
-                Cancel
-              </Button>
-              <Button variant="outlined" onClick={this.handleClearClick}>
-                Clear
-              </Button>
-            </DialogActions>
-          </Dialog>
+            <TopDrawer
+              open={this.state.drawer}
+              onClose={this.handleDrawerClose}
+              onNameChange={this.handleNameChange}
+              onCallClick={this.handleCallClick}
+              onClear={this.handleClearClick}
+              onClearNames={this.handleClearNames}
+              {...this.state}
+            />
+
+            <Dialog
+              open={this.state.dialog}
+              onClose={this.handleDialogClose}
+              aria-labelledby="alert-dialog-title"
+            >
+              <DialogContent>
+                <Typography>
+                  Clear player call history? This action cannot be undone.
+                </Typography>
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.dontConfirmClear >= Date.now()}
+                      onChange={this.handleChangeCheck}
+                      color="primary"
+                    />
+                  }
+                  label="Don't ask again today"
+                />
+              </DialogContent>
+
+              <DialogActions>
+                <Button variant="text" onClick={this.handleDialogClose}>
+                  Cancel
+                </Button>
+                <Button variant="outlined" onClick={this.handleClearClick}>
+                  Clear
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+
+          <footer className={classes.footer}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              onClick={this.handleNextClick}
+              buttonRef={this.nextButton}
+            >
+              Next
+            </Button>
+          </footer>
         </div>
-
-        <footer className={classes.footer}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-            onClick={this.handleNextClick}
-            buttonRef={this.nextButton}
-          >
-            Next
-          </Button>
-        </footer>
-      </div>
+      </ThemeProvider>
     );
   }
 

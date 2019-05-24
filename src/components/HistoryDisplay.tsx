@@ -20,8 +20,8 @@ const styles = (theme: Theme) => createStyles({
     flexDirection: 'column-reverse',
     overflowY: 'scroll',
     zIndex: 10,
-    paddingLeft: 100 + theme.spacing.unit * 2,
-    paddingRight: 100 + theme.spacing.unit * 2,
+    paddingLeft: 100 + theme.spacing(2),
+    paddingRight: 100 + theme.spacing(2),
     height: '100%',
   },
   historyContainer: {
@@ -35,7 +35,7 @@ const styles = (theme: Theme) => createStyles({
       left: 0,
       right: 0,
       zIndex: 100,
-      height: theme.spacing.unit * 20,
+      height: theme.spacing(20),
     },
     '&::before': {
       top: 0,
@@ -73,7 +73,7 @@ const styles = (theme: Theme) => createStyles({
     },
   },
   verticalSpacer: {
-    height: theme.spacing.unit * 20,
+    height: theme.spacing(20),
   },
 });
 

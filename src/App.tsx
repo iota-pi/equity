@@ -50,6 +50,7 @@ const styles = (theme: Theme) => {
     },
     appBarSpacer: theme.mixins.toolbar,
     pageContent: {
+      paddingTop: theme.spacing(1),
       display: 'flex',
       flexDirection: 'column',
       flexGrow: 1,

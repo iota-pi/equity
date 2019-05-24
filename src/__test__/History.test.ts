@@ -125,6 +125,21 @@ it('will distribute evenly into multiple groups', () => {
   }
 })
 
+it('never starts a new group unless it has to', () => {
+  const n = 3;
+  const r = 4;
+  const h = new History(n);
+  for (let i = 0; i < 100; ++i) {
+    h.clear();
+    h.add(0);
+    h.newGroup();
+    for (let j = 0; j < n * r; ++j) {
+      h.add();
+    }
+    expect(h.numberOfGroups).toBe(r + 1);
+  }
+})
+
 it('can perform simple undo', () => {
   const h = new History(5);
   h.undo(); // should do nothing, but not throw an error

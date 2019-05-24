@@ -93,21 +93,29 @@ export class History {
 
   private randomPlayer () {
     const counts = this.callCounts;
-    const fewestCalls = Math.min(...Array.from(counts.values()))
-    let x = 0;
-    let i = 0;
+    const smallestCount = Math.min(...Array.from(counts.values()))
 
-    // Avoid calling the same number twice in a row if possible
-    let avoidCall = this.allCalls[this.numberOfCalls - 1];
-    if (this.players <= 1) {
-      avoidCall = -1;
+    // Get list of possible choices
+    let choices = (new Array(this.players)).fill(0).map((_, i) => i);
+
+    // Only pick one of the least called players
+    choices = choices.filter(player => counts.get(player) === smallestCount);
+
+    // Try to avoid picking one that's already been chosen in this group
+    const notInGroup = choices.filter(player => !this.lastGroup.includes(player));
+    if (notInGroup.length > 0) {
+      choices = notInGroup;
     }
 
-    do {
-      x = Math.floor(Math.random() * this.players);
-    } while ((counts.get(x) !== fewestCalls || x === avoidCall) && (++i < this.players * 100));
+    // If there are still multiple options, don't call the same player as last time
+    if (choices.length > 1) {
+      const avoidCall = this.allCalls[this.numberOfCalls - 1];
+      choices = choices.filter((player => player !== avoidCall));
+    }
 
-    return x;
+    const p = choices[Math.floor(Math.random() * choices.length)];
+
+    return p;
   }
 
   private setTime () {

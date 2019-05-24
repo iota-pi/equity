@@ -9,4 +9,5 @@ export default interface State {
   drawer: boolean,
   showNames: boolean,
   showCounts: boolean,
+  updateSW: boolean,
 };

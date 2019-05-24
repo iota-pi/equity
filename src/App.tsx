@@ -16,13 +16,17 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Snackbar from '@material-ui/core/Snackbar';
 import Checkbox from '@material-ui/core/Checkbox';
 import Undo from '@material-ui/icons/Undo';
+import Close from '@material-ui/icons/Close';
 import ClearAll from '@material-ui/icons/ClearAll';
+import amber from '@material-ui/core/colors/amber';
+
+import * as serviceWorker from './serviceWorker';
 import TopDrawer from './components/TopDrawer';
 import { PlayerHistory } from './History';
 import State from './State';
-import amber from '@material-ui/core/colors/amber';
 
 const theme = createMuiTheme({
   palette: {
@@ -89,6 +93,7 @@ class App extends Component<Props, State> {
     drawer: false,
     showNames: false,
     showCounts: false,
+    updateSW: false,
   };
 
   nextButton: React.RefObject<HTMLInputElement>;
@@ -186,7 +191,7 @@ class App extends Component<Props, State> {
             >
               <DialogContent className={classes.moreTopPadding}>
                 <Typography>
-                  Clear player call history? This action cannot be undone.
+                  Clear player call history? This cannot be undone.
                 </Typography>
 
                 <FormControlLabel
@@ -210,6 +215,30 @@ class App extends Component<Props, State> {
                 </Button>
               </DialogActions>
             </Dialog>
+
+            <Snackbar
+              open={this.state.updateSW}
+              onClose={this.handleSnackDismiss}
+              message="This app has been updated since you last visited"
+              action={[
+                <Button
+                  key="update"
+                  color="primary"
+                  size="small"
+                  variant="text"
+                  onClick={this.handleUpdateSW}
+                >
+                  Refresh
+                </Button>,
+                <IconButton
+                  key="close"
+                  color="inherit"
+                  onClick={this.handleSnackDismiss}
+                >
+                  <Close/>
+                </IconButton>
+              ]}
+            />
           </div>
 
           <footer className={classes.footer}>
@@ -231,6 +260,15 @@ class App extends Component<Props, State> {
 
   componentWillMount () {
     this.setState({ ...this.loadFromStorage() });
+  }
+
+  componentDidMount () {
+    const app = this;
+    serviceWorker.register({
+      onUpdate () {
+        app.setState({ updateSW: true });
+      }
+    });
   }
 
   componentDidUpdate (_: Props, prevState: State) {
@@ -317,6 +355,14 @@ class App extends Component<Props, State> {
       let tomorrow = Date.now() - (Date.now() % day) + day;
       this.setState({ dontConfirmClear: tomorrow });
     }
+  };
+
+  private handleSnackDismiss = () => {
+    this.setState({ updateSW: false });
+  };
+
+  private handleUpdateSW = () => {
+    window.location.reload();
   };
 
   private addNumber = (player?: number) => {

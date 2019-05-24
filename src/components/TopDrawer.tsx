@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import Divider from "@material-ui/core/Divider";
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import Fade from '@material-ui/core/Fade';
 import Clear from '@material-ui/icons/Clear';
 import AppState from '../State';
 
@@ -70,14 +71,16 @@ class TopDrawer extends Component<Props> {
                 onKeyPress={this.handleKeyPress}
                 InputProps={{
                   endAdornment: (
-                    <IconButton
-                      aria-label="Clear field"
-                      onClick={() => this.props.onNameChange('', i)}
-                      tabIndex={-1}
-                    >
-                      <Clear/>
-                    </IconButton>
-                  )
+                    <Fade in={!!name}>
+                      <IconButton
+                        aria-label="Clear field"
+                        onClick={() => this.props.onNameChange('', i)}
+                        tabIndex={-1}
+                      >
+                        <Clear/>
+                      </IconButton>
+                    </Fade>
+                  ),
                 }}
               />
             </div>

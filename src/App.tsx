@@ -15,6 +15,11 @@ import NumberInput from './components/NumberInput';
 import HistoryDisplay from './components/HistoryDisplay';
 import TextField from "@material-ui/core/TextField";
 import Divider from "@material-ui/core/Divider";
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Undo from '@material-ui/icons/Undo';
 import ClearAll from '@material-ui/icons/ClearAll';
 import { History } from './History';
@@ -70,6 +75,8 @@ export interface State {
   history: History,
   players: number,
   names: string[],
+  dialog: boolean,
+  dontConfirmClear: boolean,
   drawer: boolean,
   showNames: boolean,
   showCounts: boolean,
@@ -80,6 +87,8 @@ class App extends Component<Props, State> {
     history: new History(1),
     players: 1,
     names: [''],
+    dialog: false,
+    dontConfirmClear: false,
     drawer: false,
     showNames: false,
     showCounts: false,
@@ -105,7 +114,7 @@ class App extends Component<Props, State> {
               Equity
             </Typography>
 
-            <IconButton color="inherit" onClick={this.handleClearClick} disabled={!this.canUndo}>
+            <IconButton color="inherit" onClick={this.handleDialogOpen} disabled={!this.canUndo}>
               <ClearAll/>
             </IconButton>
 
@@ -169,6 +178,38 @@ class App extends Component<Props, State> {
           >
             {this.renderDrawer()}
           </Drawer>
+
+          <Dialog
+            open={this.state.dialog}
+            onClose={this.handleDialogClose}
+            aria-labelledby="alert-dialog-title"
+          >
+            <DialogContent>
+              <Typography>
+                Clear player call history? This action cannot be undone.
+              </Typography>
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.dontConfirmClear}
+                    onChange={this.handleChangeCheck}
+                    color="primary"
+                  />
+                }
+                label="Don't ask again"
+              />
+            </DialogContent>
+
+            <DialogActions>
+              <Button variant="text" onClick={this.handleDialogClose}>
+                Cancel
+              </Button>
+              <Button variant="outlined" onClick={this.handleClearClick}>
+                Clear
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
 
         <footer className={classes.footer}>
@@ -330,6 +371,7 @@ class App extends Component<Props, State> {
     const history: History = Object.create(this.state.history);
     history.clear();
     this.setState({ history });
+    this.handleDialogClose();
   }
 
   private handleUndoClick = () => {
@@ -358,6 +400,22 @@ class App extends Component<Props, State> {
     this.setState({ drawer: false, showNames: false, showCounts: false });
   };
 
+  private handleDialogClose = () => {
+    this.setState({ dialog: false });
+  };
+
+  private handleDialogOpen = () => {
+    if (this.state.dontConfirmClear) {
+      this.handleClearClick();
+    } else {
+      this.setState({ dialog: true });
+    }
+  };
+
+  private handleChangeCheck = (event: ChangeEvent<HTMLInputElement>) => {
+    this.setState({ dontConfirmClear: event.target.checked });
+  };
+
   private addNumber = (player?: number) => {
     const history: History = Object.create(this.state.history);
     history.add(player);
@@ -367,7 +425,6 @@ class App extends Component<Props, State> {
   private updateNames = (players: number) => {
     // Update names array, setting all missing names to null
     const names = this.state.names.slice();
-    // names.length = players;
     for (let i = 0; i < players; ++i) {
       names[i] = names[i] || '';
     }

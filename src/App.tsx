@@ -180,7 +180,7 @@ class App extends Component<Props, State> {
               onClose={this.handleDrawerClose}
               onNameChange={this.handleNameChange}
               onCallClick={this.handleCallClick}
-              onClear={this.handleClearClick}
+              onClear={this.handleDialogOpen}
               onClearNames={this.handleClearNames}
               {...this.state}
             />

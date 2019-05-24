@@ -27,9 +27,9 @@ import amber from '@material-ui/core/colors/amber';
 const theme = createMuiTheme({
   palette: {
     primary: amber,
-    // primary: {
-    //   main: '#ffb300',
-    // },
+    secondary: {
+      main: '#2979ff',
+    },
   },
   typography: {},
 });
@@ -140,7 +140,6 @@ class App extends Component<Props, State> {
                   <Button
                     size="large"
                     variant="outlined"
-                    color="primary"
                     fullWidth
                     onClick={this.handleSetNames}
                   >

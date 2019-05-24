@@ -22,7 +22,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Undo from '@material-ui/icons/Undo';
 import ClearAll from '@material-ui/icons/ClearAll';
-import { History } from './History';
+import { PlayerHistory } from './History';
 
 const styles = (theme: Theme) => {
   const unit = theme.spacing.unit;
@@ -90,7 +90,7 @@ const defaults = {
 class App extends Component<Props, State> {
   state: State = {
     players: 1,
-    history: new History(1),
+    history: new PlayerHistory(1),
     names: [''],
     dontConfirmClear: 0,
     dialog: false,
@@ -365,7 +365,7 @@ class App extends Component<Props, State> {
   }
 
   private handlePlayerChange = (players: number) => {
-    this.setState({ players, history: new History(players) });
+    this.setState({ players, history: new PlayerHistory(players) });
     this.updateNames(players);
   };
 
@@ -387,14 +387,14 @@ class App extends Component<Props, State> {
   }
 
   private handleClearClick = () => {
-    const history: History = Object.create(this.state.history);
+    const history: PlayerHistory = Object.create(this.state.history);
     history.clear();
     this.setState({ history });
     this.handleDialogClose();
   }
 
   private handleUndoClick = () => {
-    const history: History = Object.create(this.state.history);
+    const history: PlayerHistory = Object.create(this.state.history);
     history.undo();
     this.setState({ history });
   };
@@ -441,10 +441,10 @@ class App extends Component<Props, State> {
   };
 
   private addNumber = (player?: number) => {
-    const history: History = Object.create(this.state.history);
+    const history: PlayerHistory = Object.create(this.state.history);
     history.add(player);
     this.setState({ history });
-  }
+  };
 
   private updateNames = (players: number) => {
     // Update names array, setting all missing names to null
@@ -453,7 +453,7 @@ class App extends Component<Props, State> {
       names[i] = names[i] || '';
     }
     this.setState({ names });
-  }
+  };
 
   private playerToString = (id: number) => {
     return this.state.names[id] || (id + 1).toString()
@@ -469,7 +469,7 @@ class App extends Component<Props, State> {
     setStorageAsJSON('players', this.state.players);
     setStorageAsJSON('data', this.state.history.rawData);
     setStorageAsJSON('dontConfirmClear', this.state.dontConfirmClear);
-  }
+  };
 
   private loadFromStorage = () => {
     const getStorageAsJSON = (key: string) => {
@@ -479,7 +479,7 @@ class App extends Component<Props, State> {
     const names = getStorageAsJSON('names') || defaults.names;
     const players = getStorageAsJSON('players') || defaults.players;
     const data = getStorageAsJSON('data') || undefined;
-    let history: History = new History(players);
+    let history: PlayerHistory = new PlayerHistory(players);
     if (data) {
       history.load(data);
     }
@@ -491,7 +491,7 @@ class App extends Component<Props, State> {
       history,
       dontConfirmClear,
     }
-  }
+  };
 }
 
 export default withStyles(styles)(App);

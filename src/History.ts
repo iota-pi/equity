@@ -1,7 +1,7 @@
 export const MAX_GROUPING_TIME = 1200;
 type NumberGroup = number[];
 
-export class History {
+export class PlayerHistory {
   private data: NumberGroup[];
   private players: number;
   private lastEdit: number;

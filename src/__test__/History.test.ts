@@ -1,9 +1,9 @@
-import { History, MAX_GROUPING_TIME } from '../History';
+import { PlayerHistory, MAX_GROUPING_TIME } from '../History';
 
 it('can be instantiated', () => {
-  new History(0);
-  new History(1);
-  const h = new History(10);
+  new PlayerHistory(0);
+  new PlayerHistory(1);
+  const h = new PlayerHistory(10);
 
   expect(h.numberOfPlayers).toBe(10);
   expect(h.numberOfGroups).toBe(1);
@@ -12,7 +12,7 @@ it('can be instantiated', () => {
 })
 
 it('can load existing data', () => {
-  const h = new History(5);
+  const h = new PlayerHistory(5);
   h.load([[4, 1], [2, 3], [0, 1]]);
   expect(h.numberOfPlayers).toBe(5);
   expect(h.numberOfGroups).toBe(3);
@@ -21,7 +21,7 @@ it('can load existing data', () => {
 })
 
 it('can add items', () => {
-  const h = new History(5);
+  const h = new PlayerHistory(5);
   h.add(3);
   h.add(5);
   h.add(1);
@@ -38,7 +38,7 @@ it('can add items', () => {
 })
 
 it('can add groups', () => {
-  const h = new History(10);
+  const h = new PlayerHistory(10);
   expect(h.numberOfGroups).toBe(1);
   h.newGroup();
   h.newGroup();
@@ -51,7 +51,7 @@ it('can add groups', () => {
 })
 
 it('will automatically add groups based on time', (done) => {
-  const h = new History(10);
+  const h = new PlayerHistory(10);
   h.add();
   expect(h.numberOfGroups).toBe(1);
   setTimeout(() => {
@@ -66,7 +66,7 @@ it('will automatically add groups based on time', (done) => {
 })
 
 it('can format correctly', () => {
-  const h = new History(5);
+  const h = new PlayerHistory(5);
   h.add(2);
   h.add(3);
   h.newGroup();
@@ -84,7 +84,7 @@ it('can format correctly', () => {
 })
 
 it('will create new group on duplicate values', () => {
-  const h = new History(5);
+  const h = new PlayerHistory(5);
   h.add(1);
   expect(h.numberOfGroups).toBe(1);
   h.add(1);
@@ -95,7 +95,7 @@ it('will create new group on duplicate values', () => {
 })
 
 it('will distribute evenly', () => {
-  const h = new History(10);
+  const h = new PlayerHistory(10);
   for (let i = 0; i < 10; ++i) {
     h.add();
   }
@@ -107,7 +107,7 @@ it('will distribute evenly', () => {
 it('will distribute evenly into multiple groups', () => {
   const n = 5;
   const repeats = 10;
-  const h = new History(n);
+  const h = new PlayerHistory(n);
   for (let i = 0; i < n*repeats; ++i) {
     h.add();
   }
@@ -137,7 +137,7 @@ it('will distribute evenly into multiple groups', () => {
 it('never starts a new group unless it has to', () => {
   const n = 3;
   const r = 4;
-  const h = new History(n);
+  const h = new PlayerHistory(n);
   for (let i = 0; i < 100; ++i) {
     h.clear();
     h.add(0);
@@ -150,7 +150,7 @@ it('never starts a new group unless it has to', () => {
 })
 
 it('can perform simple undo', () => {
-  const h = new History(5);
+  const h = new PlayerHistory(5);
   h.undo(); // should do nothing, but not throw an error
   expect(h.numberOfGroups).toBe(1);
   expect(h.numberOfCalls).toBe(0);
@@ -169,7 +169,7 @@ it('can perform simple undo', () => {
 })
 
 it('can undo across groups', () => {
-  const h = new History(5);
+  const h = new PlayerHistory(5);
   h.add(1);
   h.add(1);
   h.add(1);
@@ -183,7 +183,7 @@ it('can undo across groups', () => {
 })
 
 it('resets the time after an undo', (done) => {
-  const h = new History(10);
+  const h = new PlayerHistory(10);
   h.add();
   h.add();
   expect(h.numberOfGroups).toBe(1);
@@ -200,7 +200,7 @@ it('resets the time after an undo', (done) => {
 })
 
 it('can be cleared', () => {
-  const h = new History(10);
+  const h = new PlayerHistory(10);
   h.add();
   h.add();
   h.add();
@@ -220,7 +220,7 @@ it('can be cleared', () => {
 })
 
 it('doesn\'t repeat calls immediately', () => {
-  const h = new History(3);
+  const h = new PlayerHistory(3);
   let last = -1;
   for (let i = 0; i < 100; ++i) {
     const next = h.add();
@@ -230,7 +230,7 @@ it('doesn\'t repeat calls immediately', () => {
 })
 
 it('does allow repeat calls with only 1 player', () => {
-  const h = new History(1);
+  const h = new PlayerHistory(1);
   expect(h.add(0)).toBe(0);
   expect(h.add(0)).toBe(0);
   expect(h.add(0)).toBe(0);

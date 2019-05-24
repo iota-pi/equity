@@ -8,7 +8,11 @@ import Typography from '@material-ui/core/Typography';
 import TextField from "@material-ui/core/TextField";
 import Divider from "@material-ui/core/Divider";
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Clear from '@material-ui/icons/Clear';
 import AppState from '../State';
+
+type InputChange = ChangeEvent<HTMLInputElement>;
 
 const styles = (theme: Theme) => {
   const unit = theme.spacing.unit;
@@ -30,7 +34,7 @@ const styles = (theme: Theme) => {
 export interface Props extends WithStyles<typeof styles>, AppState {
   open: boolean,
   onClose: () => void,
-  onNameChange: (event: ChangeEvent<HTMLInputElement>, number: number) => void,
+  onNameChange: (name: string, number: number) => void,
   onCallClick: (player: number) => void,
   onClear: () => void,
   onClearNames: () => void,
@@ -64,7 +68,17 @@ class TopDrawer extends Component<Props> {
                 variant="outlined"
                 fullWidth
                 value={name}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => this.props.onNameChange(event, i)}
+                onChange={(event: InputChange) => this.props.onNameChange(event.target.value, i)}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton
+                      aria-label="Clear field"
+                      onClick={() => this.props.onNameChange('', i)}
+                    >
+                      <Clear/>
+                    </IconButton>
+                  )
+                }}
               />
             </div>
           ))}

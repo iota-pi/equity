@@ -232,9 +232,9 @@ class App extends Component<Props, State> {
     this.updateNames(players);
   };
 
-  private handleNameChange = (event: ChangeEvent<HTMLInputElement>, id: number) => {
+  private handleNameChange = (name: string, id: number) => {
     const names = this.state.names.slice();
-    names[id] = event.target.value;
+    names[id] = name;
     this.setState({ names });
   };
 

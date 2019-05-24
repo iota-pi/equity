@@ -16,11 +16,14 @@ export interface Props {
   fullWidth?: boolean,
   autoFocus?: boolean,
 }
+export interface State {
+  value: string,
+}
 
-class TextInput extends Component<Props> {
+class TextInput extends Component<Props, State> {
   state = {
-    value: 1
-  };
+    value: '1',
+  } as State;
 
   render() {
     return (
@@ -31,6 +34,7 @@ class TextInput extends Component<Props> {
         {...this.variantProps()}
         fullWidth={this.props.fullWidth}
         onChange={this.handleChange}
+        onBlur={this.handleBlur}
         onKeyPress={this.handleKeyPress}
         value={this.state.value.toString()}
         InputProps={{
@@ -50,12 +54,19 @@ class TextInput extends Component<Props> {
   }
 
   private handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseInt(event.target.value);
-    this.setState({ value: newValue });
-    if (this.props.onChange) {
-      this.props.onChange(newValue);
+    this.setState({ value: event.target.value });
+    const maxValue = this.props.max || 1000;
+    const intValue = parseInt(event.target.value);
+    if (intValue) {
+      if (this.props.onChange) {
+        this.props.onChange(Math.min(intValue, maxValue));
+      }
     }
   };
+
+  private handleBlur = () => {
+    this.setState({ value: (this.props.value || 1).toString() });
+  }
 
   private handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -68,8 +79,8 @@ class TextInput extends Component<Props> {
   componentDidUpdate (prevProps: Props) {
     // Update value in state if prop has changed (and prop value doesn't already match state value)
     const { value } = this.props;
-    if (value !== undefined && prevProps.value !== value && value !== this.state.value) {
-      this.setState({ value })
+    if (value !== undefined && prevProps.value !== value && value.toString() !== this.state.value) {
+      this.setState({ value: value.toString() })
     }
   }
 

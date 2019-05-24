@@ -149,7 +149,7 @@ class App extends Component<Props, State> {
                   fullWidth
                   onClick={this.handleShowCounts}
                 >
-                  Individual Counts
+                  View Counts
                 </Button>
               </Grid>
             </Grid>

@@ -43,6 +43,10 @@ export class History {
     return this.players;
   }
 
+  get rawData () {
+    return this.data;
+  }
+
   add (x?: number) {
     // Get random value for x, or ensure it is in appropriate range (0 <= x < players)
     x = x === undefined ? this.randomPlayer() : Math.abs(Math.floor(x)) % this.players;
@@ -89,6 +93,11 @@ export class History {
     const numberSort = (a: number, b: number) => +(a > b) - +(a < b);
     const formatted = this.data.map((group) => group.slice().sort(numberSort));
     return formatted.filter(group => group.length > 0);
+  }
+
+  load (data: NumberGroup[]) {
+    this.data = data;
+    return this;
   }
 
   private randomPlayer () {

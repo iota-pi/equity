@@ -11,6 +11,15 @@ it('can be instantiated', () => {
   expect(h.allCalls).toEqual([]);
 })
 
+it('can load existing data', () => {
+  const h = new History(5);
+  h.load([[4, 1], [2, 3], [0, 1]]);
+  expect(h.numberOfPlayers).toBe(5);
+  expect(h.numberOfGroups).toBe(3);
+  expect(h.numberOfCalls).toBe(6);
+  expect(h.allCalls).toEqual([4, 1, 2, 3, 0, 1]);
+})
+
 it('can add items', () => {
   const h = new History(5);
   h.add(3);

@@ -25,6 +25,11 @@ class TextInput extends Component<Props, State> {
     value: '1',
   } as State;
 
+  constructor (props: Props) {
+    super(props);
+    this.state.value = (props.value || 1).toString();
+  }
+
   render() {
     return (
       <TextField

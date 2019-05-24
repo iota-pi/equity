@@ -72,27 +72,33 @@ const styles = (theme: Theme) => {
 
 export interface Props extends WithStyles<typeof styles> {};
 export interface State {
-  history: History,
   players: number,
+  history: History,
   names: string[],
+  dontConfirmClear: number,
   dialog: boolean,
-  dontConfirmClear: boolean,
   drawer: boolean,
   showNames: boolean,
   showCounts: boolean,
 };
 
+const defaults = {
+  players: 1,
+  names: [''],
+};
+
 class App extends Component<Props, State> {
-  state = {
-    history: new History(1),
+  state: State = {
     players: 1,
+    history: new History(1),
     names: [''],
+    dontConfirmClear: 0,
     dialog: false,
-    dontConfirmClear: false,
     drawer: false,
     showNames: false,
     showCounts: false,
-  } as State;
+  };
+
   nextButton: React.RefObject<HTMLInputElement>;
 
   constructor (props: Props) {
@@ -192,12 +198,12 @@ class App extends Component<Props, State> {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.dontConfirmClear}
+                    checked={this.state.dontConfirmClear >= Date.now()}
                     onChange={this.handleChangeCheck}
                     color="primary"
                   />
                 }
-                label="Don't ask again"
+                label="Don't ask again today"
               />
             </DialogContent>
 
@@ -226,6 +232,10 @@ class App extends Component<Props, State> {
         </footer>
       </div>
     );
+  }
+
+  componentWillMount () {
+    this.setState({ ...this.loadFromStorage() });
   }
 
   private renderDrawer = () => {
@@ -345,6 +355,15 @@ class App extends Component<Props, State> {
     )
   }
 
+  componentDidUpdate (_: Props, prevState: State) {
+    if (prevState.history !== this.state.history ||
+        prevState.names !== this.state.names ||
+        prevState.players !== this.state.players ||
+        prevState.dontConfirmClear !== this.state.dontConfirmClear) {
+      this.saveToStorage();
+    }
+  }
+
   private handlePlayerChange = (players: number) => {
     this.setState({ players, history: new History(players) });
     this.updateNames(players);
@@ -405,7 +424,7 @@ class App extends Component<Props, State> {
   };
 
   private handleDialogOpen = () => {
-    if (this.state.dontConfirmClear) {
+    if (this.state.dontConfirmClear >= Date.now()) {
       this.handleClearClick();
     } else {
       this.setState({ dialog: true });
@@ -413,7 +432,12 @@ class App extends Component<Props, State> {
   };
 
   private handleChangeCheck = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ dontConfirmClear: event.target.checked });
+    if (event.target.checked) {
+      console.log()
+      const day = 1000 * 60 * 60 * 24;
+      let tomorrow = Date.now() - (Date.now() % day) + day;
+      this.setState({ dontConfirmClear: tomorrow });
+    }
   };
 
   private addNumber = (player?: number) => {
@@ -433,6 +457,40 @@ class App extends Component<Props, State> {
 
   private playerToString = (id: number) => {
     return this.state.names[id] || (id + 1).toString()
+  }
+
+  // Save and restore state to/from localStorage
+  private saveToStorage = () => {
+    const setStorageAsJSON = (key: string, data: any) => {
+      return localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    setStorageAsJSON('names', this.state.names);
+    setStorageAsJSON('players', this.state.players);
+    setStorageAsJSON('data', this.state.history.rawData);
+    setStorageAsJSON('dontConfirmClear', this.state.dontConfirmClear);
+  }
+
+  private loadFromStorage = () => {
+    const getStorageAsJSON = (key: string) => {
+      return JSON.parse(localStorage.getItem(key) || 'null');
+    }
+
+    const names = getStorageAsJSON('names') || defaults.names;
+    const players = getStorageAsJSON('players') || defaults.players;
+    const data = getStorageAsJSON('data') || undefined;
+    let history: History = new History(players);
+    if (data) {
+      history.load(data);
+    }
+    const dontConfirmClear = getStorageAsJSON('dontConfirmClear') || 0;
+
+    return {
+      names,
+      players,
+      history,
+      dontConfirmClear,
+    }
   }
 }
 

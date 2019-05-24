@@ -35,7 +35,10 @@ const styles = (theme: Theme) => createStyles({
       left: 0,
       right: 0,
       zIndex: 100,
-      height: theme.spacing(20),
+      height: theme.spacing(15),
+      [theme.breakpoints.up('sm')]: {
+        height: theme.spacing(20),
+      }
     },
     '&::before': {
       top: 0,
@@ -73,7 +76,13 @@ const styles = (theme: Theme) => createStyles({
     },
   },
   verticalSpacer: {
-    height: theme.spacing(20),
+    height: theme.spacing(10),
+    [theme.breakpoints.up('sm')]: {
+      height: theme.spacing(15),
+    },
+    [theme.breakpoints.up('md')]: {
+      height: theme.spacing(20),
+    },
   },
 });
 

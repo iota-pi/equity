@@ -77,6 +77,9 @@ export class PlayerHistory {
   undo () {
     if (this.lastGroup.length > 0) {
       this.lastGroup.pop();
+      if (this.lastGroup.length === 0 && this.numberOfGroups > 1) {
+        this.data.pop();
+      }
     } else if (this.numberOfGroups > 1) {
       this.data.pop();
       this.lastGroup.pop();
@@ -119,7 +122,7 @@ export class PlayerHistory {
     // If there are still multiple options, don't call the same player as last time
     if (choices.length > 1) {
       const avoidCall = this.allCalls[this.numberOfCalls - 1];
-      choices = choices.filter((player => player !== avoidCall));
+      choices = choices.filter(player => player !== avoidCall);
     }
 
     const p = choices[Math.floor(Math.random() * choices.length)];

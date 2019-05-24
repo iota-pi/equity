@@ -61,8 +61,8 @@ it('will automatically add groups based on time', (done) => {
       h.add();
       expect(h.numberOfGroups).toBe(2);
       done();
-    }, 100);
-  }, MAX_GROUPING_TIME + 100);
+    }, 20);
+  }, MAX_GROUPING_TIME + 20);
 })
 
 it('can format correctly', () => {
@@ -138,9 +138,9 @@ it('never starts a new group unless it has to', () => {
   const n = 3;
   const r = 4;
   const h = new PlayerHistory(n);
-  for (let i = 0; i < 100; ++i) {
+  for (let i = 0; i < 20; ++i) {
     h.clear();
-    h.add(0);
+    h.add();
     h.newGroup();
     for (let j = 0; j < n * r; ++j) {
       h.add();
@@ -175,10 +175,10 @@ it('can undo across groups', () => {
   h.add(1);
   expect(h.numberOfGroups).toBe(3);
   h.undo();
-  expect(h.numberOfGroups).toBe(3);
+  expect(h.numberOfGroups).toBe(2);
   expect(h.formatted().length).toBe(2);
   h.undo();
-  expect(h.numberOfGroups).toBe(2);
+  expect(h.numberOfGroups).toBe(1);
   expect(h.formatted().length).toBe(1);
 })
 
@@ -195,8 +195,8 @@ it('resets the time after an undo', (done) => {
       expect(h.numberOfGroups).toBe(1);
       expect(h.numberOfCalls).toBe(2);
       done();
-    }, 100);
-  }, MAX_GROUPING_TIME + 100);
+    }, 20);
+  }, MAX_GROUPING_TIME + 20);
 })
 
 it('can be cleared', () => {
@@ -222,7 +222,7 @@ it('can be cleared', () => {
 it('doesn\'t repeat calls immediately', () => {
   const h = new PlayerHistory(3);
   let last = -1;
-  for (let i = 0; i < 100; ++i) {
+  for (let i = 0; i < 50; ++i) {
     const next = h.add();
     expect(next === last).toBeFalsy();
     last = next;

@@ -55,6 +55,9 @@ const styles = (theme: Theme) => {
       display: 'flex',
       flexDirection: 'column',
     },
+    moreTopPadding: {
+      paddingTop: theme.spacing(2),
+    },
     main: {
       flexGrow: 1,
       position: 'relative',
@@ -181,7 +184,7 @@ class App extends Component<Props, State> {
               onClose={this.handleDialogClose}
               aria-labelledby="alert-dialog-title"
             >
-              <DialogContent>
+              <DialogContent className={classes.moreTopPadding}>
                 <Typography>
                   Clear player call history? This action cannot be undone.
                 </Typography>

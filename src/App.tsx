@@ -16,9 +16,15 @@ import * as serviceWorker from './serviceWorker';
 import { PlayerHistory } from './History';
 import State from './State';
 
-const TopDrawer = React.lazy(() => import('./components/TopDrawer'));
-const ClearConfirm = React.lazy(() => import('./components/ClearConfirm'));
-const UpdatePrompt = React.lazy(() => import('./components/UpdatePrompt'));
+const TopDrawer = React.lazy(() =>
+  import(/*webpackChunkName:'TopDrawer'*/ './components/TopDrawer')
+);
+const ClearConfirm = React.lazy(() =>
+  import(/*webpackChunkName:'ClearConfirm'*/ './components/ClearConfirm')
+);
+const UpdatePrompt = React.lazy(() =>
+  import(/*webpackChunkName:'UpdatePrompt'*/ './components/UpdatePrompt')
+);
 
 const theme = createMuiTheme({
   palette: {
@@ -149,7 +155,7 @@ class App extends Component<Props, State> {
               />
             </section>
 
-            <Suspense fallback={<></>}>
+            <Suspense fallback={null}>
               <TopDrawer
                 open={this.state.drawer}
                 onClose={this.handleDrawerClose}

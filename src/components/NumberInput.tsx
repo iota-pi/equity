@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent, KeyboardEvent } from "react";
+import React, { PureComponent, Component, ChangeEvent, KeyboardEvent } from "react";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import People from "@material-ui/icons/People";
@@ -20,7 +20,7 @@ export interface State {
   value: string,
 }
 
-class TextInput extends Component<Props, State> {
+class TextInput extends PureComponent<Props, State> {
   state = {
     value: '1',
   } as State;

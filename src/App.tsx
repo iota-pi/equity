@@ -4,27 +4,17 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import createMuiTheme, { Theme } from "@material-ui/core/styles/createMuiTheme";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import NumberInput from './components/NumberInput';
 import HistoryDisplay from './components/HistoryDisplay';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Snackbar from '@material-ui/core/Snackbar';
-import Checkbox from '@material-ui/core/Checkbox';
-import Undo from '@material-ui/icons/Undo';
-import Close from '@material-ui/icons/Close';
-import ClearAll from '@material-ui/icons/ClearAll';
+import TopDrawer from './components/TopDrawer';
+import AppBar from './components/AppBar';
+import ClearConfirm from './components/ClearConfirm';
+import UpdatePrompt from './components/UpdatePrompt';
 import amber from '@material-ui/core/colors/amber';
 
 import * as serviceWorker from './serviceWorker';
-import TopDrawer from './components/TopDrawer';
 import { PlayerHistory } from './History';
 import State from './State';
 
@@ -45,9 +35,6 @@ const styles = (theme: Theme) => {
       flexDirection: 'column',
       minHeight: '100vh',
     },
-    grow: {
-      flexGrow: 1,
-    },
     appBarSpacer: theme.mixins.toolbar,
     pageContent: {
       paddingTop: theme.spacing(1),
@@ -59,9 +46,6 @@ const styles = (theme: Theme) => {
       padding: theme.spacing(2),
       display: 'flex',
       flexDirection: 'column',
-    },
-    moreTopPadding: {
-      paddingTop: theme.spacing(2),
     },
     main: {
       flexGrow: 1,
@@ -112,22 +96,10 @@ class App extends Component<Props, State> {
         <div className={classes.root}>
           <CssBaseline />
           <AppBar
-            position="absolute"
-          >
-            <Toolbar>
-              <Typography variant="h6" color="inherit" className={classes.grow}>
-                Equity
-              </Typography>
-
-              <IconButton color="inherit" onClick={this.handleDialogOpen} disabled={!this.canUndo}>
-                <ClearAll/>
-              </IconButton>
-
-              <IconButton color="inherit" onClick={this.handleUndoClick} disabled={!this.canUndo}>
-                <Undo/>
-              </IconButton>
-            </Toolbar>
-          </AppBar>
+            onClear={this.handleDialogOpen}
+            onUndo={this.handleUndoClick}
+            canUndo={this.canUndo}
+          />
 
           <div className={classes.pageContent}>
             <div className={classes.appBarSpacer} />
@@ -185,60 +157,17 @@ class App extends Component<Props, State> {
               {...this.state}
             />
 
-            <Dialog
-              open={this.state.dialog}
+            <ClearConfirm
+              show={this.state.dialog}
+              dontConfirmClear={this.state.dontConfirmClear >= Date.now()}
               onClose={this.handleDialogClose}
-              aria-labelledby="alert-dialog-title"
-            >
-              <DialogContent className={classes.moreTopPadding}>
-                <Typography>
-                  Clear player call history? This cannot be undone.
-                </Typography>
+              onClear={this.handleClearClick}
+              onChangeConfirmClear={this.handleChangeCheck}
+            />
 
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={this.state.dontConfirmClear >= Date.now()}
-                      onChange={this.handleChangeCheck}
-                      color="primary"
-                    />
-                  }
-                  label="Don't ask again today"
-                />
-              </DialogContent>
-
-              <DialogActions>
-                <Button variant="text" onClick={this.handleDialogClose}>
-                  Cancel
-                </Button>
-                <Button variant="outlined" onClick={this.handleClearClick}>
-                  Clear
-                </Button>
-              </DialogActions>
-            </Dialog>
-
-            <Snackbar
-              open={this.state.updateSW}
+            <UpdatePrompt
+              show={this.state.updateSW}
               onClose={this.handleSnackDismiss}
-              message="This app has been updated since you last visited"
-              action={[
-                <Button
-                  key="update"
-                  color="primary"
-                  size="small"
-                  variant="text"
-                  onClick={this.handleUpdateSW}
-                >
-                  Refresh
-                </Button>,
-                <IconButton
-                  key="close"
-                  color="inherit"
-                  onClick={this.handleSnackDismiss}
-                >
-                  <Close/>
-                </IconButton>
-              ]}
             />
           </div>
 
@@ -360,10 +289,6 @@ class App extends Component<Props, State> {
 
   private handleSnackDismiss = () => {
     this.setState({ updateSW: false });
-  };
-
-  private handleUpdateSW = () => {
-    window.location.reload();
   };
 
   private addNumber = (player?: number) => {

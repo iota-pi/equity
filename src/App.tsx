@@ -284,10 +284,11 @@ class App extends Component<Props, State> {
 
   private handleChangeCheck = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      console.log()
       const day = 1000 * 60 * 60 * 24;
       let tomorrow = Date.now() - (Date.now() % day) + day;
       this.setState({ dontConfirmClear: tomorrow });
+    } else {
+      this.setState({ dontConfirmClear: 0 });
     }
   };
 

@@ -182,6 +182,7 @@ class TopDrawer extends Component<Props> {
               size="large"
               fullWidth
               onClick={this.props.onClear}
+              disabled={this.props.history.numberOfCalls === 0}
             >
               Clear
             </Button>

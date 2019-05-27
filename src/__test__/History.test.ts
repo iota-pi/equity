@@ -1,8 +1,6 @@
 import { PlayerHistory, MAX_GROUPING_TIME } from '../History';
 
 it('can be instantiated', () => {
-  new PlayerHistory(0);
-  new PlayerHistory(1);
   const h = new PlayerHistory(10);
 
   expect(h.numberOfPlayers).toBe(10);

@@ -33,15 +33,16 @@ class TextInput extends PureComponent<Props, State> {
   render() {
     return (
       <TextField
-        autoFocus={this.props.autoFocus}
-        label={this.props.label}
+        id="player-count"
         type="number"
+        label={this.props.label}
+        value={this.state.value.toString()}
+        autoFocus={this.props.autoFocus}
         {...this.variantProps()}
         fullWidth={this.props.fullWidth}
         onChange={this.handleChange}
         onBlur={this.handleBlur}
         onKeyPress={this.handleKeyPress}
-        value={this.state.value.toString()}
         InputProps={{
           inputProps: {
             min: this.props.min || 1,

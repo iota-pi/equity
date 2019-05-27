@@ -35,11 +35,21 @@ class EquityAppBar extends PureComponent<Props> {
             Equity
           </Typography>
 
-          <IconButton color="inherit" onClick={this.props.onClear} disabled={!this.props.canUndo}>
+          <IconButton
+            color="inherit"
+            onClick={this.props.onClear}
+            disabled={!this.props.canUndo}
+            aria-label="Clear"
+          >
             <ClearAll/>
           </IconButton>
 
-          <IconButton color="inherit" onClick={this.props.onUndo} disabled={!this.props.canUndo}>
+          <IconButton
+            color="inherit"
+            onClick={this.props.onUndo}
+            disabled={!this.props.canUndo}
+            aria-label="Undo"
+          >
             <Undo/>
           </IconButton>
         </Toolbar>

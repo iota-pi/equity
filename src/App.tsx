@@ -1,22 +1,24 @@
-import React, { Component, ChangeEvent } from 'react';
+import React, { Component, ChangeEvent, Suspense } from 'react';
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
 import createStyles from "@material-ui/core/styles/createStyles";
 import createMuiTheme, { Theme } from "@material-ui/core/styles/createMuiTheme";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import NumberInput from './components/NumberInput';
 import HistoryDisplay from './components/HistoryDisplay';
-import TopDrawer from './components/TopDrawer';
 import AppBar from './components/AppBar';
-import ClearConfirm from './components/ClearConfirm';
-import UpdatePrompt from './components/UpdatePrompt';
 import amber from '@material-ui/core/colors/amber';
 
 import * as serviceWorker from './serviceWorker';
 import { PlayerHistory } from './History';
 import State from './State';
+
+const TopDrawer = React.lazy(() => import('./components/TopDrawer'));
+const ClearConfirm = React.lazy(() => import('./components/ClearConfirm'));
+const UpdatePrompt = React.lazy(() => import('./components/UpdatePrompt'));
 
 const theme = createMuiTheme({
   palette: {
@@ -147,28 +149,30 @@ class App extends Component<Props, State> {
               />
             </section>
 
-            <TopDrawer
-              open={this.state.drawer}
-              onClose={this.handleDrawerClose}
-              onNameChange={this.handleNameChange}
-              onCallClick={this.handleCallClick}
-              onClear={this.handleDialogOpen}
-              onClearNames={this.handleClearNames}
-              {...this.state}
-            />
+            <Suspense fallback={<></>}>
+              <TopDrawer
+                open={this.state.drawer}
+                onClose={this.handleDrawerClose}
+                onNameChange={this.handleNameChange}
+                onCallClick={this.handleCallClick}
+                onClear={this.handleDialogOpen}
+                onClearNames={this.handleClearNames}
+                {...this.state}
+              />
 
-            <ClearConfirm
-              show={this.state.dialog}
-              dontConfirmClear={this.state.dontConfirmClear >= Date.now()}
-              onClose={this.handleDialogClose}
-              onClear={this.handleClearClick}
-              onChangeConfirmClear={this.handleChangeCheck}
-            />
+              <ClearConfirm
+                show={this.state.dialog}
+                dontConfirmClear={this.state.dontConfirmClear >= Date.now()}
+                onClose={this.handleDialogClose}
+                onClear={this.handleClearClick}
+                onChangeConfirmClear={this.handleChangeCheck}
+              />
 
-            <UpdatePrompt
-              show={this.state.updateSW}
-              onClose={this.handleSnackDismiss}
-            />
+              <UpdatePrompt
+                show={this.state.updateSW}
+                onClose={this.handleSnackDismiss}
+              />
+            </Suspense>
           </div>
 
           <footer className={classes.footer}>

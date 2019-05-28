@@ -36,4 +36,14 @@ describe('<AppBar/>', () => {
     expect(clear).toHaveBeenCalledTimes(1);
     expect(undo).toHaveBeenCalledTimes(1);
   });
+
+  it('doesn\'t triggers callbacks on disabled buttons', () => {
+    const clear = jest.fn();
+    const undo = jest.fn();
+    const wrapper = mount(<AppBar canUndo={false} onClear={clear} onUndo={undo} />);
+    wrapper.find('button').first().simulate('click');
+    wrapper.find('button').last().simulate('click');
+    expect(clear).toHaveBeenCalledTimes(0);
+    expect(undo).toHaveBeenCalledTimes(0);
+  });
 });

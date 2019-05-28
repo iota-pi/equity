@@ -22,7 +22,7 @@ export interface Props extends WithStyles<typeof styles> {
   show: boolean,
   dontConfirmClear: boolean,
   onClose: () => void,
-  onChangeConfirmClear: (event: ChangeEvent<HTMLInputElement>) => void,
+  onChangeConfirmClear: (value: boolean) => void,
   onClear: () => void,
 };
 
@@ -45,7 +45,7 @@ class ClearConfirm extends PureComponent<Props> {
             control={
               <Checkbox
                 checked={this.props.dontConfirmClear}
-                onChange={this.props.onChangeConfirmClear}
+                onChange={this.handleChange}
                 color="primary"
               />
             }
@@ -63,6 +63,10 @@ class ClearConfirm extends PureComponent<Props> {
         </DialogActions>
       </Dialog>
     )
+  }
+
+  handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    this.props.onChangeConfirmClear(!event.target.checked);
   }
 }
 

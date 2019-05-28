@@ -288,8 +288,8 @@ class App extends Component<Props, State> {
     }
   };
 
-  private handleChangeCheck = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
+  private handleChangeCheck = (value: boolean) => {
+    if (value) {
       const day = 1000 * 60 * 60 * 24;
       let tomorrow = Date.now() - (Date.now() % day) + day;
       this.setState({ dontConfirmClear: tomorrow });

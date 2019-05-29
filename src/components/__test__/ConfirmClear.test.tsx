@@ -1,5 +1,5 @@
 import React from 'react';
-import ClearConfirm from '../ClearConfirm';
+import ClearConfirm from '../ConfirmClear';
 import { shallow, mount, render, configure } from 'enzyme';
 
 describe('<ClearConfirm/>', () => {
@@ -61,13 +61,13 @@ describe('<ClearConfirm/>', () => {
 
     const checkbox = wrapper.find('input').first();
     checkbox.simulate('change', {
-      target: checkbox.getDOMNode()
+      target: { checked: true },
     });
     expect(change).toHaveBeenCalledTimes(1);
     expect(change).toHaveBeenLastCalledWith(true);
     wrapper.setProps({ dontConfirmClear: true });
     checkbox.simulate('change', {
-      target: checkbox.getDOMNode()
+      target: { checked: false },
     });
     expect(change).toHaveBeenCalledTimes(2);
     expect(change).toHaveBeenLastCalledWith(false);

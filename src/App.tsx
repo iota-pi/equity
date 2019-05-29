@@ -20,7 +20,7 @@ const TopDrawer = React.lazy(() =>
   import(/*webpackChunkName:'TopDrawer'*/ './components/TopDrawer')
 );
 const ClearConfirm = React.lazy(() =>
-  import(/*webpackChunkName:'ClearConfirm'*/ './components/ClearConfirm')
+  import(/*webpackChunkName:'ClearConfirm'*/ './components/ConfirmClear')
 );
 const UpdatePrompt = React.lazy(() =>
   import(/*webpackChunkName:'UpdatePrompt'*/ './components/UpdatePrompt')

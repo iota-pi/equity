@@ -66,7 +66,7 @@ class ClearConfirm extends PureComponent<Props> {
   }
 
   handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    this.props.onChangeConfirmClear(!event.target.checked);
+    this.props.onChangeConfirmClear(event.target.checked);
   }
 }
 

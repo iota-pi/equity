@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ClearConfirm/> renders consistently 1`] = `
+exports[`<Confirm Clear/> renders consistently 1`] = `
 <WithStyles(ClearConfirm)
   dontConfirmClear={false}
   onChangeConfirmClear={[MockFunction]}
@@ -2590,7 +2590,7 @@ exports[`<ClearConfirm/> renders consistently 1`] = `
 </WithStyles(ClearConfirm)>
 `;
 
-exports[`<ClearConfirm/> renders consistently 2`] = `
+exports[`<Confirm Clear/> renders consistently 2`] = `
 <WithStyles(ClearConfirm)
   dontConfirmClear={false}
   onChangeConfirmClear={[MockFunction]}
@@ -3247,7 +3247,7 @@ exports[`<ClearConfirm/> renders consistently 2`] = `
 </WithStyles(ClearConfirm)>
 `;
 
-exports[`<ClearConfirm/> renders consistently 3`] = `
+exports[`<Confirm Clear/> renders consistently 3`] = `
 <WithStyles(ClearConfirm)
   dontConfirmClear={true}
   onChangeConfirmClear={[MockFunction]}

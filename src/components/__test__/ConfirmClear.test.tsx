@@ -2,7 +2,7 @@ import React from 'react';
 import ClearConfirm from '../ConfirmClear';
 import { shallow, mount, render, configure } from 'enzyme';
 
-describe('<ClearConfirm/>', () => {
+describe('<Confirm Clear/>', () => {
   it('renders consistently', () => {
     const fn = jest.fn();
     const wrapper = mount(
